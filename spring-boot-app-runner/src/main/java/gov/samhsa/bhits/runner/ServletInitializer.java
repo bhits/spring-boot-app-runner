@@ -1,4 +1,4 @@
-package gov.samhsa.bhits;
+package gov.samhsa.bhits.runner;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;

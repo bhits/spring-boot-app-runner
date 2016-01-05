@@ -1,4 +1,4 @@
-package gov.samhsa.bhits;
+package gov.samhsa.bhits.runner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
