@@ -1,17 +1,23 @@
 package gov.samhsa.bhits.runner;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SpringBootAppRunnerConfiguration {
 
-    private List<SpringBootAppConfiguration> apps;
+    private Map<String, SpringBootAppConfiguration> apps;
 
-    public List<SpringBootAppConfiguration> getApps() {
+    public SpringBootAppRunnerConfiguration() {
+        this.apps = new HashMap<>();
+    }
+
+    public Map<String, SpringBootAppConfiguration> getApps() {
         return apps;
     }
 
-    public void setApps(List<SpringBootAppConfiguration> apps) {
+    public void setApps(Map<String, SpringBootAppConfiguration> apps) {
         this.apps = apps;
     }
 }
