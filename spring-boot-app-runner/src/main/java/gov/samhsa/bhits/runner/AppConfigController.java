@@ -21,6 +21,9 @@ public class AppConfigController {
     @Autowired
     private JarFileManager jarFileManager;
 
+    @Autowired
+    private ProcessRunner processRunner;
+
 
     @RequestMapping(value = "/appConfigs")
     public AppConfigContainer getApps() {
@@ -47,7 +50,7 @@ public class AppConfigController {
     public AppConfigContainer postInstance(@PathVariable("groupId") String groupId,
                                            @PathVariable("artifactId") String artifactId,
                                            @RequestBody InstanceConfig instanceConfig) throws IOException {
-        this.configManager.saveInstanceConfig(groupId, artifactId, instanceConfig);
-        return this.configManager.getConfigContainer();
+        InstanceConfig savedInstance = this.configManager.saveInstanceConfig(groupId, artifactId, instanceConfig);
+        return processRunner.startProcess(groupId, artifactId, savedInstance);
     }
 }

@@ -48,10 +48,11 @@ public class ConfigManager {
         persistsConfigContainer();
     }
 
-    public synchronized void saveInstanceConfig(String groupId, String artifactId, InstanceConfig instanceConfig) {
+    public synchronized InstanceConfig saveInstanceConfig(String groupId, String artifactId, InstanceConfig instanceConfig) {
         Assert.isTrue(instanceConfig.getPort() > MIN_PORT_LIMIT && instanceConfig.getPort() < MAX_PORT_LIMIT, "port number must be: 'port > " + MIN_PORT_LIMIT + " && port < " + MAX_PORT_LIMIT + "'");
-        this.configContainer.save(groupId, artifactId, instanceConfig);
+        InstanceConfig savedInstance = this.configContainer.save(groupId, artifactId, instanceConfig);
         persistsConfigContainer();
+        return savedInstance;
     }
 
     public synchronized void deleteConfig(AppConfig appConfig) {

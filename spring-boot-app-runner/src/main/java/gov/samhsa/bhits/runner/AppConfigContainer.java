@@ -25,10 +25,11 @@ public class AppConfigContainer {
         this.appConfigs.add(appConfig);
     }
 
-    public synchronized void save(String groupId, String artifactId, InstanceConfig instanceConfig) {
+    public synchronized InstanceConfig save(String groupId, String artifactId, InstanceConfig instanceConfig) {
         AppConfig appConfig = findAppConfig(groupId, artifactId);
         deleteIfExists(appConfig, instanceConfig);
         appConfig.getInstanceConfigs().add(instanceConfig);
+        return instanceConfig;
     }
 
     public synchronized void deleteIfExists(AppConfig appConfig, InstanceConfig instanceConfig) {
