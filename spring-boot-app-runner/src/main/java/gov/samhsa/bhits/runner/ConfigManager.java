@@ -17,6 +17,8 @@ import java.nio.file.StandardOpenOption;
 @Service
 public class ConfigManager {
 
+    public static final int MIN_PORT_LIMIT = 0;
+    public static final int MAX_PORT_LIMIT = 65536;
     public static final String CONFIG_FILE_NAME = "SpringBootAppRunnerConfig.json";
 
     @Value("${bhits.apprunner.config.path}")
@@ -41,12 +43,18 @@ public class ConfigManager {
         return configFolderBasePath;
     }
 
-    public synchronized void saveConfig(AppConfig appConfig){
+    public synchronized void saveAppConfig(AppConfig appConfig) {
         this.configContainer.save(appConfig);
         persistsConfigContainer();
     }
 
-    public synchronized void deleteConfig(AppConfig appConfig){
+    public synchronized void saveInstanceConfig(String groupId, String artifactId, InstanceConfig instanceConfig) {
+        Assert.isTrue(instanceConfig.getPort() > MIN_PORT_LIMIT && instanceConfig.getPort() < MAX_PORT_LIMIT, "port number must be: 'port > " + MIN_PORT_LIMIT + " && port < " + MAX_PORT_LIMIT + "'");
+        this.configContainer.save(groupId, artifactId, instanceConfig);
+        persistsConfigContainer();
+    }
+
+    public synchronized void deleteConfig(AppConfig appConfig) {
         this.configContainer.deleteIfExists(appConfig);
         persistsConfigContainer();
     }
