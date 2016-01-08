@@ -40,4 +40,9 @@ public class InstanceConfig {
     public void setProcess(Optional<Process> process) {
         this.process = process;
     }
+
+    public void stopProcess() {
+        this.process.ifPresent(Process::destroy);
+        this.process = Optional.empty();
+    }
 }

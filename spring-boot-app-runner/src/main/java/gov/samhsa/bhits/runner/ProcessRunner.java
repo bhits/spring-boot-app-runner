@@ -11,11 +11,17 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.io.*;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toList;
 
 
 @Service
@@ -36,12 +42,13 @@ public class ProcessRunner {
     }
 
     @PostConstruct
-    public void afterPropertiesSet(){
-        this.configManager.getConfigContainer().getAppConfigs().stream()
-                .forEach(appConfig -> appConfig.getInstanceConfigs().stream()
-                        .peek(instanceConfig -> logger.info("Starting up " + appConfig.key() + " at " + instanceConfig.getPort()))
-                        .forEach(instanceConfig -> startProcess(appConfig.getGroupId(), appConfig.getArtifactId(), instanceConfig)));
+    public void afterPropertiesSet() {
+        logger.info("ProcessRunner.afterPropertiesSet(): " + this.configManager.getConfigContainer().getAppConfigs().size());
+        Map<AppConfig, List<InstanceConfig>> copyOfConfigs = this.configManager.getConfigContainer().getAppConfigs().stream()
+                .collect(toMap(app -> app, app -> app.getInstanceConfigs().stream().collect(toList())));
+        copyOfConfigs.forEach((app, instances) -> instances.forEach(instance -> startProcess(app.getGroupId(), app.getArtifactId(), instance)));
     }
+
 
     @PreDestroy
     public void destroy() {
@@ -62,9 +69,13 @@ public class ProcessRunner {
     }
 
     private void sleepUntilInstanceStarts(InstanceConfig instanceConfig) {
-        while (instanceConfig.getProcess().map(Process::isAlive).isPresent()) {
+        AtomicInteger counter = new AtomicInteger(0);
+        while (!instanceConfig.getProcess().map(Process::isAlive).isPresent()) {
             try {
                 Thread.sleep(1000);
+                if(counter.incrementAndGet() == 5){
+                    break;
+                }
             } catch (InterruptedException e) {
                 throw new ProcessRunnerException(e);
             }
@@ -72,8 +83,9 @@ public class ProcessRunner {
     }
 
     private void startInstanceAsync(AppConfig appConfig, InstanceConfig instanceConfig, File jarPath) {
+        Assert.isTrue(available(instanceConfig.getPort()), "Port " + instanceConfig.getPort() + " is not available, cannot start app " + appConfig.key());
         new Thread(() -> {
-            instanceConfig.getProcess().filter(Process::isAlive).ifPresent(Process::destroy);
+            instanceConfig.stopProcess();
             Stream<String> runJar = Stream.of("java", "-jar", appConfig.jarName(), "--server.port=" + instanceConfig.getPort());
             Stream<String> withAppArgs = appConfig.getArgs().entrySet().stream().map(ProcessRunner::toArg);
             Stream<String> withInstanceArgs = instanceConfig.getArgs().entrySet().stream().map(ProcessRunner::toArg);
@@ -103,6 +115,35 @@ public class ProcessRunner {
                 logger.error(appConfig.key() + "> ", e);
             }
         }).start();
+    }
+
+    public static boolean available(int port) {
+        if (port < ConfigManager.MIN_PORT_NUMBER || port > ConfigManager.MAX_PORT_NUMBER) {
+            throw new IllegalArgumentException("Invalid start port: " + port);
+        }
+
+        ServerSocket ss = null;
+        DatagramSocket ds = null;
+        try {
+            ss = new ServerSocket(port);
+            ss.setReuseAddress(true);
+            ds = new DatagramSocket(port);
+            ds.setReuseAddress(true);
+            return true;
+        } catch (IOException e) {
+        } finally {
+            if (ds != null) {
+                ds.close();
+            }
+            if (ss != null) {
+                try {
+                    ss.close();
+                } catch (IOException e) {
+                /* should not be thrown */
+                }
+            }
+        }
+        return false;
     }
 
     private static String toArg(Map.Entry<String, String> entry) {

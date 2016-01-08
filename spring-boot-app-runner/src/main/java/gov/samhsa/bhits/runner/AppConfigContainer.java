@@ -3,6 +3,7 @@ package gov.samhsa.bhits.runner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AppConfigContainer {
 
@@ -40,7 +41,13 @@ public class AppConfigContainer {
     }
 
     public synchronized void deleteIfExists(AppConfig appConfig) {
-        this.appConfigs.stream().filter(app -> isSameApp(app, appConfig)).findFirst().ifPresent(this.appConfigs::remove);
+        this.appConfigs.stream()
+                .filter(app -> isSameApp(app, appConfig))
+                .findFirst()
+                .ifPresent(app -> {
+                    app.getInstanceConfigs().stream().forEach(instance -> deleteIfExists(app, instance));
+                    this.appConfigs.remove(app);
+                });
     }
 
     public boolean isSameApp(AppConfig app1, AppConfig app2) {
@@ -51,10 +58,20 @@ public class AppConfigContainer {
         return this.appConfigs.stream().filter(app -> app.key().equals(appKey)).findAny().get();
     }
 
-    public AppConfig findAppConfig(String groupId, String artifactId){
+    public AppConfig findAppConfig(String groupId, String artifactId) {
         return this.appConfigs.stream()
                 .filter(app -> app.getGroupId().equals(groupId) && app.getArtifactId().equals(artifactId))
                 .findFirst()
                 .get();
+    }
+
+    public InstanceConfig findInstanceConfig(String groupId, String artifactId, int port) {
+        return findInstanceConfigAsOptional(groupId, artifactId, port).get();
+    }
+
+    public Optional<InstanceConfig> findInstanceConfigAsOptional(String groupId, String artifactId, int port) {
+        return findAppConfig(groupId, artifactId).getInstanceConfigs().stream()
+                .filter(instance -> instance.getPort() == port)
+                .findFirst();
     }
 }

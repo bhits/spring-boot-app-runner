@@ -24,7 +24,6 @@ public class AppConfigController {
     @Autowired
     private ProcessRunner processRunner;
 
-
     @RequestMapping(value = "/appConfigs")
     public AppConfigContainer getApps() {
         return configManager.getConfigContainer();
@@ -49,8 +48,16 @@ public class AppConfigController {
     @RequestMapping(value = "/appConfigs/{groupId}/{artifactId}/instanceConfigs", method = RequestMethod.POST)
     public AppConfigContainer postInstance(@PathVariable("groupId") String groupId,
                                            @PathVariable("artifactId") String artifactId,
-                                           @RequestBody InstanceConfig instanceConfig) throws IOException {
+                                           @RequestBody InstanceConfig instanceConfig) {
+        this.configManager.getConfigContainer().findInstanceConfigAsOptional(groupId, artifactId, instanceConfig.getPort()).ifPresent(InstanceConfig::stopProcess);
         InstanceConfig savedInstance = this.configManager.saveInstanceConfig(groupId, artifactId, instanceConfig);
         return processRunner.startProcess(groupId, artifactId, savedInstance);
+    }
+
+    @RequestMapping(value = "/appConfigs/{groupId}/{artifactId}/instanceConfigs/ports/{port}", method = RequestMethod.DELETE)
+    public AppConfigContainer deleteInstance(@PathVariable("groupId") String groupId,
+                                           @PathVariable("artifactId") String artifactId,
+                                           @PathVariable("port") int port) {
+        return this.configManager.deleteInstanceConfig(groupId, artifactId, port);
     }
 }

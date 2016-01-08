@@ -17,8 +17,8 @@ import java.nio.file.StandardOpenOption;
 @Service
 public class ConfigManager {
 
-    public static final int MIN_PORT_LIMIT = 0;
-    public static final int MAX_PORT_LIMIT = 65536;
+    public static final int MIN_PORT_NUMBER = 0;
+    public static final int MAX_PORT_NUMBER = 65536;
     public static final String CONFIG_FILE_NAME = "SpringBootAppRunnerConfig.json";
 
     @Value("${bhits.apprunner.config.path}")
@@ -49,15 +49,25 @@ public class ConfigManager {
     }
 
     public synchronized InstanceConfig saveInstanceConfig(String groupId, String artifactId, InstanceConfig instanceConfig) {
-        Assert.isTrue(instanceConfig.getPort() > MIN_PORT_LIMIT && instanceConfig.getPort() < MAX_PORT_LIMIT, "port number must be: 'port > " + MIN_PORT_LIMIT + " && port < " + MAX_PORT_LIMIT + "'");
+        Assert.isTrue(instanceConfig.getPort() > MIN_PORT_NUMBER && instanceConfig.getPort() < MAX_PORT_NUMBER, "port number must be: 'port > " + MIN_PORT_NUMBER + " && port < " + MAX_PORT_NUMBER + "'");
         InstanceConfig savedInstance = this.configContainer.save(groupId, artifactId, instanceConfig);
         persistsConfigContainer();
         return savedInstance;
     }
 
-    public synchronized void deleteConfig(AppConfig appConfig) {
+    public synchronized AppConfigContainer deleteAppConfig(AppConfig appConfig) {
         this.configContainer.deleteIfExists(appConfig);
         persistsConfigContainer();
+        return this.configContainer;
+    }
+
+    public synchronized AppConfigContainer deleteInstanceConfig(String groupId, String artifactId, int port){
+        AppConfig appConfig = this.configContainer.findAppConfig(groupId, artifactId);
+        InstanceConfig instanceConfig = this.configContainer.findInstanceConfig(groupId, artifactId, port);
+        instanceConfig.stopProcess();
+        this.configContainer.deleteIfExists(appConfig, instanceConfig);
+        persistsConfigContainer();
+        return this.configContainer;
     }
 
     public AppConfigContainer getConfigContainer() {
