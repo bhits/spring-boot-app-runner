@@ -1,11 +1,16 @@
 package gov.samhsa.bhits.runner;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class AppConfigContainer {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private volatile List<AppConfig> appConfigs;
 
@@ -44,10 +49,7 @@ public class AppConfigContainer {
         this.appConfigs.stream()
                 .filter(app -> isSameApp(app, appConfig))
                 .findFirst()
-                .ifPresent(app -> {
-                    app.getInstanceConfigs().stream().forEach(instance -> deleteIfExists(app, instance));
-                    this.appConfigs.remove(app);
-                });
+                .ifPresent(this.appConfigs::remove);
     }
 
     public boolean isSameApp(AppConfig app1, AppConfig app2) {
@@ -59,10 +61,15 @@ public class AppConfigContainer {
     }
 
     public AppConfig findAppConfig(String groupId, String artifactId) {
+        return findAppConfigAsOptional(groupId, artifactId).get();
+    }
+
+    public Optional<AppConfig> findAppConfigAsOptional(String groupId, String artifactId) {
+        logger.info("looking for " + groupId + "/" + artifactId);
         return this.appConfigs.stream()
+                .peek(app -> logger.info("peeking at " + app.getGroupId() + "/" + app.getArtifactId()))
                 .filter(app -> app.getGroupId().equals(groupId) && app.getArtifactId().equals(artifactId))
-                .findFirst()
-                .get();
+                .findFirst();
     }
 
     public InstanceConfig findInstanceConfig(String groupId, String artifactId, int port) {

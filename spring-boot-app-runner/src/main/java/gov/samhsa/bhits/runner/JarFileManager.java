@@ -13,10 +13,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class JarFileManager {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ConfigManager configManager;
@@ -40,7 +42,7 @@ public class JarFileManager {
                 throw new JarFileManagerException(err, e);
             }
         } else {
-            String err = "Failed to save "  + jarFilePath + " because the file was empty.";
+            String err = "Failed to save " + jarFilePath + " because the file was empty.";
             logger.error(err);
             throw new JarFileManagerException(err);
         }
@@ -48,13 +50,34 @@ public class JarFileManager {
 
     public void deleteFile(AppConfig appConfig) {
         try {
-            Path filePath = Paths.get(jarFilePath(appConfig));
-            Files.deleteIfExists(filePath);
-            logger.info("Deleted " + filePath + " if it already existed");
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            throw new JarFileManagerException(e.getMessage(), e);
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            logger.error("Failed sleeping before deleting the jar file", e);
         }
+        Path filePath = Paths.get(jarFilePath(appConfig));
+        AtomicInteger counter = new AtomicInteger(0);
+        Optional<JarFileManagerException> error = Optional.empty();
+        while (Files.exists(filePath) && counter.incrementAndGet() < 5) {
+            try {
+                logger.info("Trying to delete " + filePath + "; trial: " + counter.get());
+                Files.deleteIfExists(filePath);
+                logger.info("Deleted " + filePath + " if it already existed");
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+                error = Optional.of(new JarFileManagerException(e));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        }
+        error.ifPresent(e -> {
+            if (Files.exists(filePath)) {
+                logger.error("Could not delete " + filePath + " in " + counter.get() + " trials");
+                throw e;
+            }
+        });
     }
 
     private String jarFilePath(AppConfig appConfig) {

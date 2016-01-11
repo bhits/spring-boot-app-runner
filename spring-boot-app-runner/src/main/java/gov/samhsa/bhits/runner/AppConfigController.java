@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class AppConfigController {
@@ -40,8 +39,23 @@ public class AppConfigController {
         appConfig.setArtifactId(artifactId);
         appConfig.setVersion(version);
         appConfig.setArgs(mapper.readValue(args, Map.class));
+        this.configManager.getConfigContainer().findAppConfigAsOptional(groupId, artifactId).ifPresent(app -> {
+            app.stopProcess();
+            appConfig.setInstanceConfigs(app.getInstanceConfigs());
+        });
         this.jarFileManager.saveFile(appConfig, file);
         this.configManager.saveAppConfig(appConfig);
+        this.processRunner.startProcess(groupId, artifactId);
+        return this.configManager.getConfigContainer();
+    }
+
+    @RequestMapping(value = "/appConfigs/{groupId}/{artifactId}", method = RequestMethod.DELETE)
+    public AppConfigContainer deleteApp(@PathVariable("groupId") String groupId,
+                                        @PathVariable("artifactId") String artifactId) throws IOException {
+        AppConfig appConfig = this.configManager.getConfigContainer().findAppConfig(groupId, artifactId);
+        appConfig.stopProcess();
+        this.jarFileManager.deleteFile(appConfig);
+        this.configManager.deleteAppConfig(appConfig);
         return this.configManager.getConfigContainer();
     }
 
@@ -56,8 +70,8 @@ public class AppConfigController {
 
     @RequestMapping(value = "/appConfigs/{groupId}/{artifactId}/instanceConfigs/ports/{port}", method = RequestMethod.DELETE)
     public AppConfigContainer deleteInstance(@PathVariable("groupId") String groupId,
-                                           @PathVariable("artifactId") String artifactId,
-                                           @PathVariable("port") int port) {
+                                             @PathVariable("artifactId") String artifactId,
+                                             @PathVariable("port") int port) {
         return this.configManager.deleteInstanceConfig(groupId, artifactId, port);
     }
 }

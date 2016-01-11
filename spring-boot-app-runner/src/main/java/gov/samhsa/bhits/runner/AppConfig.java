@@ -4,9 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
-import java.util.*;
-
-import static java.util.stream.Collectors.toMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AppConfig {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -61,6 +62,12 @@ public class AppConfig {
 
     public void setInstanceConfigs(List<InstanceConfig> instanceConfigs) {
         this.instanceConfigs = instanceConfigs;
+    }
+
+    public void stopProcess() {
+        this.instanceConfigs.stream()
+                .peek(instanceConfig -> logger.info("About to destroy " + key() + " at port " + instanceConfig.getPort()))
+                .forEach(InstanceConfig::stopProcess);
     }
 
     public String key() {

@@ -61,7 +61,7 @@ public class ConfigManager {
         return this.configContainer;
     }
 
-    public synchronized AppConfigContainer deleteInstanceConfig(String groupId, String artifactId, int port){
+    public synchronized AppConfigContainer deleteInstanceConfig(String groupId, String artifactId, int port) {
         AppConfig appConfig = this.configContainer.findAppConfig(groupId, artifactId);
         InstanceConfig instanceConfig = this.configContainer.findInstanceConfig(groupId, artifactId, port);
         instanceConfig.stopProcess();

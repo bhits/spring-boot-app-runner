@@ -11,4 +11,7 @@ public class JarFileManagerException extends RuntimeException {
     public JarFileManagerException(String message, Throwable cause) {
         super(message, cause);
     }
+    public JarFileManagerException(Throwable cause) {
+        super(cause);
+    }
 }

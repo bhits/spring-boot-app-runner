@@ -8,9 +8,11 @@ public class ConfigManagerException extends RuntimeException {
     public ConfigManagerException(String message) {
         super(message);
     }
+
     public ConfigManagerException(String message, Throwable cause) {
         super(message, cause);
     }
+
     public ConfigManagerException(Throwable cause) {
         super(cause);
     }
