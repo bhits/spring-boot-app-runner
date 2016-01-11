@@ -4,14 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class JarFileManagerException extends RuntimeException {
-    public JarFileManagerException(String message) {
+public class FileManagerException extends RuntimeException {
+    public FileManagerException(String message) {
         super(message);
     }
-    public JarFileManagerException(String message, Throwable cause) {
+    public FileManagerException(String message, Throwable cause) {
         super(message, cause);
     }
-    public JarFileManagerException(Throwable cause) {
+    public FileManagerException(Throwable cause) {
         super(cause);
     }
 }

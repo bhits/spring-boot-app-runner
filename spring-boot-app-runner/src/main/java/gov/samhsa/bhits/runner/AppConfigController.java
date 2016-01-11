@@ -18,7 +18,7 @@ public class AppConfigController {
     private ConfigManager configManager;
 
     @Autowired
-    private JarFileManager jarFileManager;
+    private FileManager fileManager;
 
     @Autowired
     private ProcessRunner processRunner;
@@ -32,18 +32,20 @@ public class AppConfigController {
     public AppConfigContainer postApp(@RequestParam("groupId") String groupId,
                                       @RequestParam("artifactId") String artifactId,
                                       @RequestParam("version") String version,
+                                      @RequestParam("packaging") Packaging packaging,
                                       @RequestParam("args") String args,
                                       @RequestParam("file") MultipartFile file) throws IOException {
         AppConfig appConfig = new AppConfig();
         appConfig.setGroupId(groupId);
         appConfig.setArtifactId(artifactId);
         appConfig.setVersion(version);
+        appConfig.setPackaging(packaging);
         appConfig.setArgs(mapper.readValue(args, Map.class));
         this.configManager.getConfigContainer().findAppConfigAsOptional(groupId, artifactId).ifPresent(app -> {
             app.stopProcess();
             appConfig.setInstanceConfigs(app.getInstanceConfigs());
         });
-        this.jarFileManager.saveFile(appConfig, file);
+        this.fileManager.saveFile(appConfig, file);
         this.configManager.saveAppConfig(appConfig);
         this.processRunner.startProcess(groupId, artifactId);
         return this.configManager.getConfigContainer();
@@ -54,7 +56,7 @@ public class AppConfigController {
                                         @PathVariable("artifactId") String artifactId) throws IOException {
         AppConfig appConfig = this.configManager.getConfigContainer().findAppConfig(groupId, artifactId);
         appConfig.stopProcess();
-        this.jarFileManager.deleteFile(appConfig);
+        this.fileManager.deleteFile(appConfig);
         this.configManager.deleteAppConfig(appConfig);
         return this.configManager.getConfigContainer();
     }

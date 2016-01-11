@@ -16,6 +16,7 @@ public class AppConfig {
     private String groupId;
     private String artifactId;
     private String version;
+    private Packaging packaging;
     private Map<String, String> args;
     private List<InstanceConfig> instanceConfigs;
 
@@ -64,6 +65,14 @@ public class AppConfig {
         this.instanceConfigs = instanceConfigs;
     }
 
+    public Packaging getPackaging() {
+        return packaging;
+    }
+
+    public void setPackaging(Packaging packaging) {
+        this.packaging = packaging;
+    }
+
     public void stopProcess() {
         this.instanceConfigs.stream()
                 .peek(instanceConfig -> logger.info("About to destroy " + key() + " at port " + instanceConfig.getPort()))
@@ -76,7 +85,7 @@ public class AppConfig {
         return this.groupId + DELIMITER + this.artifactId;
     }
 
-    public String jarName() {
-        return key() + ".jar";
+    public String fileName() {
+        return key() + "." + this.packaging.toString();
     }
 }

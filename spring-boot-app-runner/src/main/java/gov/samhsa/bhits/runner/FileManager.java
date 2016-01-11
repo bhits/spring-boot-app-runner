@@ -17,14 +17,14 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
-public class JarFileManager {
+public class FileManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ConfigManager configManager;
 
     public void saveFile(AppConfig appConfig, MultipartFile file) {
-        String name = appConfig.jarName();
+        String name = appConfig.fileName();
         String jarFilePathString = jarFilePath(appConfig);
         Path jarFilePath = Paths.get(jarFilePathString);
         if (!file.isEmpty()) {
@@ -39,12 +39,12 @@ public class JarFileManager {
             } catch (Exception e) {
                 String err = "Failed to save " + jarFilePath + " => " + e.getMessage();
                 logger.error(err);
-                throw new JarFileManagerException(err, e);
+                throw new FileManagerException(err, e);
             }
         } else {
             String err = "Failed to save " + jarFilePath + " because the file was empty.";
             logger.error(err);
-            throw new JarFileManagerException(err);
+            throw new FileManagerException(err);
         }
     }
 
@@ -56,7 +56,7 @@ public class JarFileManager {
         }
         Path filePath = Paths.get(jarFilePath(appConfig));
         AtomicInteger counter = new AtomicInteger(0);
-        Optional<JarFileManagerException> error = Optional.empty();
+        Optional<FileManagerException> error = Optional.empty();
         while (Files.exists(filePath) && counter.incrementAndGet() < 5) {
             try {
                 logger.info("Trying to delete " + filePath + "; trial: " + counter.get());
@@ -64,7 +64,7 @@ public class JarFileManager {
                 logger.info("Deleted " + filePath + " if it already existed");
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
-                error = Optional.of(new JarFileManagerException(e));
+                error = Optional.of(new FileManagerException(e));
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e1) {
@@ -81,6 +81,6 @@ public class JarFileManager {
     }
 
     private String jarFilePath(AppConfig appConfig) {
-        return configManager.getConfigFolderBasePath() + appConfig.jarName();
+        return configManager.getConfigFolderBasePath() + appConfig.fileName();
     }
 }

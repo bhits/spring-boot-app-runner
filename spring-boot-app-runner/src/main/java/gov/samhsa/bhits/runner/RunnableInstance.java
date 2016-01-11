@@ -34,7 +34,7 @@ public class RunnableInstance implements Runnable {
     @Override
     public void run() {
         this.running = true;
-        Stream<String> runJar = Stream.of("java", "-jar", appConfig.jarName(), "--server.port=" + instanceConfig.getPort());
+        Stream<String> runJar = Stream.of("java", "-jar", appConfig.fileName(), "--server.port=" + instanceConfig.getPort());
         Stream<String> withAppArgs = appConfig.getArgs().entrySet().stream().map(RunnableInstance::toArg);
         Stream<String> withInstanceArgs = instanceConfig.getArgs().entrySet().stream().map(RunnableInstance::toArg);
         String[] cmdarray = Stream.concat(Stream.concat(runJar, withAppArgs), withInstanceArgs).toArray(String[]::new);
