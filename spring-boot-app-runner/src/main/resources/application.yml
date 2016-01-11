@@ -7,6 +7,11 @@ multipart:
   maxRequestSize: 50MB
 logging:
   file: ${bhits.apprunner.config.path}/app-runner.log
+security:
+  basic:
+    enabled: true
+  user:
+    name: admin
+    password: ${bhits.apprunner.config.password}
 # sample curl command to post file @ windows
-# curl -v -F groupId=mygroupd -F artifactId=myartifact -F version=myversion -F "args={\"k1\":\"v1\",\"k2\":\"v2\"}" -F file=@\"C:/idea-workspaces/demo2/target/demo2-0.0.1-SNAPSHOT.jar\" http://localhost:8080/appConfigs
-# curl -v -F groupId=my.group.id -F artifactId=my.artifact.id -F version=1.0.0-SNAPSHOT -F packaging=jar -F "args={\"--server.port\":\"8081\",\"k2\":\"v2\"}" -F file=@\"C:/idea-workspaces/demo2/target/demo2-0.0.1-SNAPSHOT.jar\" http://localhost:8080/appConfigs
+# curl --user username:password -v -F groupId=my.group.id -F artifactId=my.artifact.id -F version=1.0.0-SNAPSHOT -F packaging=jar -F "args={\"--server.port\":\"8081\",\"k2\":\"v2\"}" -F file=@\"C:/idea-workspaces/demo2/target/demo2-0.0.1-SNAPSHOT.jar\" http://localhost:8080/appConfigs
