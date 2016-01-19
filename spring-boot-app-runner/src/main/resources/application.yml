@@ -3,8 +3,8 @@ bhits:
     config:
       path: C:/java/app-runner
 multipart:
-  maxFileSize: 50MB
-  maxRequestSize: 50MB
+  maxFileSize: 100MB
+  maxRequestSize: 100MB
 logging:
   file: ${bhits.apprunner.config.path}/app-runner.log
 security:
