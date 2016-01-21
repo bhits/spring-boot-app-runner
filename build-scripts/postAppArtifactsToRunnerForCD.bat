@@ -1,0 +1,133 @@
+@ECHO off
+
+:: ********************************Please set the following configuration*************
+:: NOTE: DO NOT change variable names
+:: Jenkins will set CONFIGS_DELIVERY_HOME environment variable if this batch is running in a Jenkins job
+:: SET CONFIGS_DELIVERY_HOME=
+:: Previous Jenkins job will predefine following value of variables
+:: SET scriptLocation=
+:: SET INITIAL_PROJECT_VERSION=
+:: Following value of variables will get from jenkins
+:: SET transferKey=
+:: SET cipherUsername=
+:: SET cipherPassword=
+:: SET runnerURL=
+:: SET jobName=
+:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy]
+:: ***********************************************************************************
+
+:: Start running script
+CALL :run
+PAUSE
+EXIT
+
+:: Declare methods start
+: run
+  CALL :checkAppsRunnerStatus
+  GOTO :EOF
+
+:checkAppsRunnerStatus
+  CURL -I -k %runnerURL% >NUL 2>NUL
+  IF %ERRORLEVEL% NEQ 0 (
+    ECHO WARNING! The spring boot app runner is NOT starting.
+  ) ELSE (
+      CALL :selectApplicationToRun
+  )
+  GOTO :EOF
+
+:selectApplicationToRun
+  CALL :set%appName%Configs
+  CALL :decryptAccountAuthentication
+  CALL :startPostFile
+  GOTO :EOF
+
+:setPhrConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\phr-web.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.phr
+  SET formDataArtifactId=artifactId=phr
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setPPUIConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\pp-ui.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.bhits.ppui
+  SET formDataArtifactId=artifactId=ppui
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setRegistrationConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\registration.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.registration
+  SET formDataArtifactId=artifactId=registration
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setPcmConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\pcm.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=
+  SET formDataArtifactId=artifactId=
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setAdminPortalConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\admin-portal.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=
+  SET formDataArtifactId=artifactId=
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setTryPolicyConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\try-policy.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=
+  SET formDataArtifactId=artifactId=
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:checkAppFile
+  IF NOT EXIST %filePath% (
+	ECHO WARNING! The file is NOT existing.
+	SET ERRORLEVEL=1
+	EXIT
+  )
+  GOTO :EOF
+
+:decryptAccountAuthentication
+  FOR /F %%i IN ('"ECHO %cipherUsername% | openssl enc -d -aes-256-cbc -a -salt -pass pass:%transferKey%"') DO SET plainUsername=%%i
+  FOR /F %%i IN ('"ECHO %cipherPassword% | openssl enc -d -aes-256-cbc -a -salt -pass pass:%transferKey%"') DO SET plainPassword=%%i
+  GOTO :EOF
+
+:startPostFile
+  SET formDataOptions=-F %formDataGroupId% -F %formDataArtifactId% -F %formDataVersion% -F %formDataPackaging% -F %formDataArgs% -F %formDataFile%
+  CURL -u %plainUsername%:%plainPassword% -k -v %formDataOptions% %runnerURL%
+  GOTO :EOF
+:: Declare methods end
