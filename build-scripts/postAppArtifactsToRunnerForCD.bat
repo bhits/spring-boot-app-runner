@@ -16,6 +16,11 @@
 :: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy]
 :: ***********************************************************************************
 
+:: Declare variables start
+SET logPath=%CONFIGS_DELIVERY_HOME%\%jobName%
+SET logName=%logPath%\%date:~4,2%-%date:~7,2%-%date:~10,4%-status.log
+:: Declare variables end
+
 :: Start running script
 CALL :run
 PAUSE
@@ -41,18 +46,6 @@ EXIT
   CALL :startPostFile
   GOTO :EOF
 
-:setPhrConfigs
-:: Following are Spring Boot Apps Runner parameters
-  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\phr-web.jar
-  CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.phr
-  SET formDataArtifactId=artifactId=phr
-  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
-  SET formDataPackaging=packaging=jar
-  SET formDataArgs=args={}
-  SET formDataFile=file=@\"%filePath%\"
-  GOTO :EOF
-
 :setPPUIConfigs
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\pp-ui.jar
@@ -65,12 +58,12 @@ EXIT
   SET formDataFile=file=@\"%filePath%\"
   GOTO :EOF
 
-:setRegistrationConfigs
+:setPhrConfigs
 :: Following are Spring Boot Apps Runner parameters
-  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\registration.jar
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\phr-web.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.registration
-  SET formDataArtifactId=artifactId=registration
+  SET formDataGroupId=groupId=gov.samhsa.phr
+  SET formDataArtifactId=artifactId=phr
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
@@ -93,8 +86,20 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\admin-portal.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=
-  SET formDataArtifactId=artifactId=
+  SET formDataGroupId=groupId=gov.samhsa.adminportal
+  SET formDataArtifactId=artifactId=admin-portal
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setRegistrationConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\registration.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.registration
+  SET formDataArtifactId=artifactId=registration
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
@@ -128,6 +133,15 @@ EXIT
 
 :startPostFile
   SET formDataOptions=-F %formDataGroupId% -F %formDataArtifactId% -F %formDataVersion% -F %formDataPackaging% -F %formDataArgs% -F %formDataFile%
-  CURL -u %plainUsername%:%plainPassword% -k -v %formDataOptions% %runnerURL%
+  CURL -u %plainUsername%:%plainPassword% -k -s -D %logName% %formDataOptions% %runnerURL%
+  CALL :checkPostStatus
+  GOTO :EOF
+
+:checkPostStatus
+  FOR /f %%f IN ('findstr /c:"HTTP/1.1 200" "%logName%"') DO SET/a totalSuccess+=1
+  IF (%totalSuccess%) NEQ (1) (
+      ECHO WARNING! Post app artifacts failed!
+	  EXIT 3
+  )
   GOTO :EOF
 :: Declare methods end
