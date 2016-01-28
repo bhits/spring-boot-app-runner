@@ -60,9 +60,9 @@ EXIT
 
 :setPhrConfigs
 :: Following are Spring Boot Apps Runner parameters
-  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\phr-web.jar
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\phr.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.phr
+  SET formDataGroupId=groupId=gov.samhsa.mhc
   SET formDataArtifactId=artifactId=phr
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -74,8 +74,8 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\pcm.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=
-  SET formDataArtifactId=artifactId=
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=pcm
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
@@ -108,10 +108,10 @@ EXIT
 
 :setTryPolicyConfigs
 :: Following are Spring Boot Apps Runner parameters
-  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\try-policy.jar
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\try-policy-web.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=
-  SET formDataArtifactId=artifactId=
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=try-policy-web
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
