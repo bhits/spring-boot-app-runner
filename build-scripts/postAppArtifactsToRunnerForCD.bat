@@ -13,7 +13,7 @@
 :: SET cipherPassword=
 :: SET runnerURL=
 :: SET jobName=
-:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy]
+:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy,Dss]
 :: ***********************************************************************************
 
 :: Declare variables start
@@ -112,6 +112,18 @@ EXIT
   CALL :checkAppFile
   SET formDataGroupId=groupId=gov.samhsa.mhc
   SET formDataArtifactId=artifactId=try-policy-web
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setDssConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\dss.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=dss
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
