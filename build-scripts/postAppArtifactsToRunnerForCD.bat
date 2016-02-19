@@ -108,10 +108,10 @@ EXIT
 
 :setTryPolicyConfigs
 :: Following are Spring Boot Apps Runner parameters
-  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\try-policy-web.jar
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\try-policy.jar
   CALL :checkAppFile
   SET formDataGroupId=groupId=gov.samhsa.mhc
-  SET formDataArtifactId=artifactId=try-policy-web
+  SET formDataArtifactId=artifactId=try-policy
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
