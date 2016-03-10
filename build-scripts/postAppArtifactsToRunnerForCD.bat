@@ -13,7 +13,7 @@
 :: SET cipherPassword=
 :: SET runnerURL=
 :: SET jobName=
-:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy,Dss]
+:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy,Dss,AdminPortalUI,PatientUser]
 :: ***********************************************************************************
 
 :: Declare variables start
@@ -50,8 +50,8 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\pp-ui.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.bhits.ppui
-  SET formDataArtifactId=artifactId=ppui
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=pp-ui
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
@@ -124,6 +124,30 @@ EXIT
   CALL :checkAppFile
   SET formDataGroupId=groupId=gov.samhsa.mhc
   SET formDataArtifactId=artifactId=dss
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setAdminPortalUIConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\admin-portal-ui.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=admin-portal-ui
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setPatientUserConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\patient-user.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=patient-user
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
