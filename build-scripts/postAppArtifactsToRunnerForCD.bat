@@ -96,10 +96,10 @@ EXIT
 
 :setRegistrationConfigs
 :: Following are Spring Boot Apps Runner parameters
-  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\registration.jar
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\patient-registration.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.registration
-  SET formDataArtifactId=artifactId=registration
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=patient-registration
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
