@@ -13,7 +13,7 @@
 :: SET cipherPassword=
 :: SET runnerURL=
 :: SET jobName=
-:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy,Dss,AdminPortalUI,PatientUser]
+:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy,Dss,AdminPortalUI,PatientUser,EdgeServer,DiscoveryServer]
 :: ***********************************************************************************
 
 :: Declare variables start
@@ -148,6 +148,30 @@ EXIT
   CALL :checkAppFile
   SET formDataGroupId=groupId=gov.samhsa.mhc
   SET formDataArtifactId=artifactId=patient-user
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setEdgeServerConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\edge-server.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=edge-server
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+
+:setDiscoveryServerConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\discovery-server.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataArtifactId=artifactId=discovery-server
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
