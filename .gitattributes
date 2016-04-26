@@ -44,6 +44,10 @@
 *.prefs text
 *.opt text
 
+# Docker related files
+Dockerfile text
+dockerfile text
+
 # YAML config files:
 *.yaml text
 *.yml text
@@ -51,6 +55,7 @@
 # Build config files:
 *.npmignore text
 *.bowerrc text
+*.gradle text
 
 # template files:
 *.ejs text
@@ -67,11 +72,14 @@
 README text
 LICENSE text
 AUTHORS text
+NOTICE text
 
 # Batch/shell script files:
 *.sh text
 *.bat text
 *.cmd text
+mvnw text
+gradlew text
 
 *.sql text
 
@@ -120,6 +128,7 @@ Procfile text
 .gitattributes text
 .gitignore text
 .gitconfig text
+.gitreview text
 
 
 
@@ -155,6 +164,23 @@ Procfile text
 *.jar binary
 *.war binary
 *.ear binary
+
+# SSH/SSL certificate related files:
+*.cer binary
+*.crt binary
+*.csr binary
+*.der binary
+*.p7b binary
+*.p7r binary
+*.spc binary
+*.pfx binary
+*.p12 binary
+*.crl binary
+*.pem binary
+*.key binary
+*.jks binary
+*.keystore binary
+cacerts binary
 
 # Python files:
 *.db binary
