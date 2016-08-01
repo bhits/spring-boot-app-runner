@@ -50,7 +50,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\pp-ui.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=pp-ui
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -62,7 +62,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\phr.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=phr
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -74,7 +74,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\pcm.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=pcm
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -98,7 +98,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\patient-registration.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=patient-registration
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -110,7 +110,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\try-policy.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=try-policy
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -122,7 +122,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\dss.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=dss
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -134,7 +134,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\admin-portal-ui.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=admin-portal-ui
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -146,7 +146,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\patient-user.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=patient-user
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -158,7 +158,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\edge-server.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=edge-server
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
@@ -170,7 +170,7 @@ EXIT
 :: Following are Spring Boot Apps Runner parameters
   SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\discovery-server.jar
   CALL :checkAppFile
-  SET formDataGroupId=groupId=gov.samhsa.mhc
+  SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=discovery-server
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
