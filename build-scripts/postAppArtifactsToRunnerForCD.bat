@@ -13,7 +13,7 @@
 :: SET cipherPassword=
 :: SET runnerURL=
 :: SET jobName=
-:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy,Dss,AdminPortalUI,PatientUser,EdgeServer,DiscoveryServer,Pep,ContextHandler]
+:: SET appName=[Phr,PPUI,Registration,Pcm,AdminPortal,TryPolicy,Dss,AdminPortalUI,PatientUser,EdgeServer,DiscoveryServer,Pep,ContextHandler,ConfigServer]
 :: ***********************************************************************************
 
 :: Declare variables start
@@ -196,6 +196,18 @@ EXIT
   CALL :checkAppFile
   SET formDataGroupId=groupId=gov.samhsa.c2s
   SET formDataArtifactId=artifactId=context-handler
+  SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
+  SET formDataPackaging=packaging=jar
+  SET formDataArgs=args={}
+  SET formDataFile=file=@\"%filePath%\"
+  GOTO :EOF
+  
+:setConfigServerConfigs
+:: Following are Spring Boot Apps Runner parameters
+  SET filePath=%CONFIGS_DELIVERY_HOME%\%jobName%\target\config-server.jar
+  CALL :checkAppFile
+  SET formDataGroupId=groupId=gov.samhsa.c2s
+  SET formDataArtifactId=artifactId=config-server
   SET formDataVersion=version=%INITIAL_PROJECT_VERSION%
   SET formDataPackaging=packaging=jar
   SET formDataArgs=args={}
