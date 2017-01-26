@@ -17,19 +17,6 @@
 		<developerConnection>scm:git:https://github.com/FEISystems/spring-boot-app-runner.git</developerConnection>
 	</scm>
 
-	<distributionManagement>
-		<repository>
-			<id>deployment</id>
-			<name>Internal Releases</name>
-			<url>http://${maven.nexus.servername}/repository/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>deployment</id>
-			<name>Internal Releases</name>
-			<url>http://${maven.nexus.servername}/repository/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
